@@ -130,6 +130,8 @@ async function getProducts(): Promise<void> {
   })
 }
 
+// CASE 1
+// 時間複雜度：先針對類別跑一次迴圈再針對各類別跑數據迴圈，時間複雜度為 O(n*m)，n 是數據長度，m 是類別數。對於大型數據，效能較低。
 // function filterData<T>(data: Array<T>): void {
 //   sortData.value['all'] = data;
 //   ['casual', 'stylish', 'classic', 'luxury'].forEach((type: string) => {
@@ -138,25 +140,36 @@ async function getProducts(): Promise<void> {
 //   isReady.value = true;
 // }
 
+// // CASE 2
+// // 時間複雜度：建立基本格式後只跑一次數據迴圈，時間複雜度為 O(n)，相較篩選一對於大型數據更高效能。
 // function filterData<T>(data: Array<T>): void {
-//   sortData.value = data.reduce((accumulator: any, currentValue: any) => {
-//     Object.keys(accumulator).forEach((type: string) => {
-//       if (currentValue.category === type) {
-//         accumulator[type].push(currentValue);
-//       }
-//     })
-//     return accumulator;
-//   }, 
-//   {
-//     ['casual']:[],
-//     ['stylish']:[],
-//     ['classic']:[],
-//     ['luxury']:[]
+//   const results = {
+//     all: data,
+//     ['casual']: [],
+//     ['stylish']: [],
+//     ['classic']: [],
+//     ['luxury']: []
+//   }
+//   data.forEach((item) => {
+//     switch (item.category) {
+//       case 'casual': results['casual'].push(item)
+//         break;
+//       case 'stylish': results['stylish'].push(item)
+//         break;
+//       case 'classic': results['classic'].push(item)
+//         break;
+//       case 'luxury': results['luxury'].push(item)
+//         break;
+//       default:
+//         break;
+//     }
 //   })
-//   sortData.value['all'] = data
+//   sortData.value = results
 //   isReady.value = true;
 // }
 
+// CASE 3
+// 時間複雜度：相較篩選二一樣只跑一次數據迴圈，時間複雜度為 O(n)，但使用 Promise，能夠並行處理異步操作及篩選，對於大型數據效能最大化。
 function filterData<T>(data: Array<T>) {
   sortData.value['all'] = data
   Promise.all([
