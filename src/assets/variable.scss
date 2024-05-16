@@ -1,0 +1,49 @@
+// 主題
+$first_theme_color: rgb(34, 39, 54);
+$second_theme_color: rgb(24, 27, 46);
+$text_theme_color: rgb(142, 111, 71);
+
+.bg_first_theme_color {
+  background-color: $first_theme_color !important;
+}
+.bg_second_theme_color {
+  background-color: $second_theme_color !important;
+}
+
+@for $i from -100 through 200 {
+  .top_#{$i} {
+    top: $i * 1%;
+  }
+  .left_#{$i} {
+    left: $i * 1%;
+  }
+  .right_#{$i} {
+    right: $i * 1%;
+  }
+  .bottom_#{$i} {
+    bottom: $i * 1%;
+  }
+  .w_#{$i} {
+    width: $i * 1%;
+  }
+  .h_#{$i} {
+    height: $i * 1%;
+  }
+}
+
+@mixin setSize($width, $height) {
+  height: $height;
+  width: $width;
+}
+@mixin setPaddingY($top, $bottom) {
+  padding-top: $top;
+  padding-bottom: $bottom;
+}
+@mixin setPaddingX($left, $right) {
+  padding-left: $left;
+  padding-right: $right;
+}
+@mixin setMarginY($top, $bottom) {
+  margin-top: $top;
+  margin-bottom: $bottom;
+}
