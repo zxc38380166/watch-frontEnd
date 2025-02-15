@@ -99,7 +99,84 @@ const isReady: Ref<boolean> = ref(false);
 
 onMounted(async () => {
   getProducts()
+  // 閉包範例
+  // function aFunc(x: any){
+  //   return () => console.log( x++ )
+  // }
+  // const newFunc = aFunc(1) // 此時宣告x等於1已存入newFunc記憶體, 後續除非銷毀 newFunc 否則每次呼叫x 都會是原賦值
+  // newFunc()
+  // newFunc()
+
+  // 執行順序為 3.4.5.6.7
+  // setTimeout(() => {
+  //   console.log(7)
+  // }, 0)
+  // new Promise((resolve, reject) => {
+  //   console.log(3)
+  //   resolve()
+  //   console.log(4)
+  // }).then(() => {
+  //   console.log(6)
+  // })
+  // console.log(5)
+
+  // const obj = {
+  //   thisFu: function() { // 一搬函數 this 取決於它得外層
+  //     console.log(this, 'this')
+  //   },
+  //   thisArrowFu: () => { // 箭頭函數沒有自己的 this 取決於在哪個作用域呼叫
+  //     console.log(this, 'this')
+  //   }
+  // }
+  // obj.thisFu()
+  // obj.thisArrowFu()
+
+  // const v2Data = {
+  //   message: 'Hello, Vue 2!'
+  // }
+
+  // // 使用Object.defineProperty()定义响应式属性
+  // Object.defineProperty(v2Data, 'message', {
+  //   get() {
+  //     console.log('Get message')
+  //     return v2Data._message
+  //   },
+  //   set(value) {
+  //     console.log('Set message')
+  //     v2Data._message = value
+  //   }
+  // })
+
+  // console.log(v2Data.message) // 输出：Get message  Hello, Vue 2!
+  // v2Data.message = 'Updated Message' // 输出：Set message
+  // console.log(v2Data.message) // 输出：Get message  Updated Message
+
+
+  // 使用Proxy对象创建响应式代理
+
+  const data = {
+    message: "Hello, Vue 3!"
+  };
+
+  // const reactiveData = new Proxy(data, {
+  //   get(target, key) {
+  //     console.log('Get', key);
+  //     return target[key];
+  //   },
+  //   set(target, key, value) {
+  //     console.log('Set', key);
+  //     target[key] = value;
+  //   }
+  // });
+
+  // console.log(reactiveData.message); // 输出：Get message  Hello, Vue 3!
+  // reactiveData.message = "Updated Message"; // 输出：Set message
+  // console.log(reactiveData.message); // 输出：Get message  Updated Message
+
 })
+
+
+
 
 const filterMode: Ref<string> = ref('all')
 function toggleFilterMode(mode: string): void {
@@ -119,6 +196,8 @@ function toggleFilterMode(mode: string): void {
 
 async function getProducts(): Promise<void> {
   await retryApi(apiGetProduct, '').then((response: any) => {
+    console.log(response, 'response');
+    
     filterData(response.data)
   }).catch(() => {
     ElNotification({
@@ -129,6 +208,62 @@ async function getProducts(): Promise<void> {
     })
   })
 }
+
+type Data = {
+  name: string;
+  price: number;
+}
+const data: Array<Data> = [
+  {
+    name: '石斑',
+    price: 300,
+  },
+  {
+    name: '烏魚',
+    price: 100,
+  },
+  {
+    name: '鱈魚',
+    price: 1000,
+  },
+  {
+    name: '章魚',
+    price: 20,
+  },
+  {
+    name: '花枝',
+    price: 60,
+  }
+]
+
+console.log('結果：', data.some((item) => item.name === '鱈魚'))
+
+let result = true
+data.forEach((item) => {
+  if (item.price > 2000) {
+    result = false
+  }
+})
+console.log('所有階小於2000', result);
+
+const resultNameData = data.reduce((value: string[], item: { name: string; price: number }) => {
+  if (item.price < 70) value.push(item.name)
+  return value
+}, [])
+console.log(resultNameData, 'resultNameData');
+
+const noFirshData = data.filter((item) => !item.name.includes('魚'))
+console.log(noFirshData, 'noFirshData');
+
+const priceResult = data.reduce((value, item) => {
+  if (item.price > 90) {
+    value += item.price
+  }
+  return value
+}, 0)
+console.log(priceResult, 'priceResult');
+
+
 
 // CASE 1
 // 時間複雜度：先針對類別跑一次迴圈再針對各類別跑數據迴圈，時間複雜度為 O(n*m)，n 是數據長度，m 是類別數。對於大型數據，效能較低。
